@@ -1,0 +1,47 @@
+import os
+from langchain_community.utilities.sql_database import SQLDatabase
+from langchain_core.prompts import PromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+os.environ["GOOGLE_API_KEY"] = ("Gemnini_API_Key")
+
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+
+db = SQLDatabase.from_uri(
+    "mysql+pymysql://root:Amal14504@localhost:3306/college_db"
+)
+
+sql_prompt = PromptTemplate(
+    input_variables=["question", "schema"],
+    template="""
+You are an expert MySQL analyst.
+
+Database Schema:
+{schema}
+
+Convert the question into ONE valid MySQL query.
+
+Rules:
+- Use only the tables and columns from the schema.
+- Return ONLY SQL.
+- Do not explain.
+- Generate exactly ONE SQL statement.
+- If inserting multiple rows, use a single INSERT statement with multiple VALUES.
+
+Question:
+{question}
+""",
+)
+
+schema = db.get_table_info()
+question = "create a table for student marks"
+
+response = llm.invoke(sql_prompt.format(question=question, schema=schema))
+query = response.content.strip()
+
+print("\nGenerated SQL:")
+print(query)
+
+result = db.run(query)
+print("\nResult:")
+print(result)
