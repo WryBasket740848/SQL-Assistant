@@ -1,18 +1,21 @@
-# AI-Powered SQL Query Generator using LangChain & Gemini
+# AI SQL Query Generator using LangChain & Gemini
 
 ## Overview
 
-This project uses Google's Gemini AI model and LangChain to automatically generate MySQL queries from natural language questions. The application analyzes the database schema, converts user requests into valid SQL statements, executes them on a MySQL database, and returns the results.
+This project converts natural language questions into executable MySQL queries using Google's Gemini AI and LangChain. The application automatically reads the database schema, generates SQL queries from user prompts, cleans the generated SQL, and executes it on a MySQL database.
 
 ## Features
 
-* Natural language to SQL conversion
-* Google Gemini 2.5 Flash integration
-* Automatic database schema analysis
-* MySQL database connectivity
-* SQL query execution
-* LangChain-powered prompt engineering
-* Supports DDL, DML, and SELECT operations
+* Natural Language to SQL Conversion
+* Google Gemini 2.5 Flash Integration
+* MySQL Database Connectivity
+* Automatic Schema Extraction
+* SQL Query Execution
+* LangChain Prompt Engineering
+* SQL Cleanup Before Execution
+* Error Handling
+
+---
 
 ## Technologies Used
 
@@ -22,19 +25,23 @@ This project uses Google's Gemini AI model and LangChain to automatically genera
 * MySQL
 * SQLAlchemy
 * PyMySQL
+* Python Dotenv
+
+---
 
 ## Installation
 
-### Clone the Repository
+### Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/ai-sql-generator.git
-cd ai-sql-generator
+git clone https://github.com/yourusername/ai-sql-query-generator.git
+cd ai-sql-query-generator
 ```
 
-### Install Dependencies
+### Install Required Packages
 
 ```bash
+pip install python-dotenv
 pip install langchain-community
 pip install langchain-core
 pip install langchain-google-genai
@@ -43,37 +50,87 @@ pip install pymysql
 pip install sqlalchemy
 ```
 
-Or install all at once:
+Or install everything at once:
 
 ```bash
-pip install langchain-community langchain-core langchain-google-genai google-generativeai pymysql sqlalchemy
+pip install python-dotenv langchain-community langchain-core langchain-google-genai google-generativeai pymysql sqlalchemy
 ```
+
+---
 
 ## Configuration
 
-Set your Google API Key:
+### Step 1: Create a .env File
 
-```python
-os.environ["GOOGLE_API_KEY"] = "YOUR_API_KEY"
+Create a file named `.env` in the project root directory.
+
+```env
+GOOGLE_API_KEY=your_google_api_key_here
 ```
 
-Configure your MySQL database connection:
+Replace `your_google_api_key_here` with your Gemini API key.
+
+---
+
+### Step 2: Configure MySQL Connection
+
+Locate this line in the code:
 
 ```python
 db = SQLDatabase.from_uri(
-    "mysql+pymysql://username:password@localhost:3306/database_name"
+    "mysql+pymysql://root:YOURPASSWORD@localhost:3306/college_db"
 )
 ```
 
-## Project Workflow
+Replace:
 
-1. Connect to MySQL database.
-2. Retrieve database schema.
-3. Accept a natural language question.
-4. Send schema and question to Gemini AI.
-5. Generate a valid SQL query.
-6. Execute the query.
-7. Display the results.
+```text
+YOURPASSWORD
+```
+
+with your actual MySQL password.
+
+Example:
+
+```python
+db = SQLDatabase.from_uri(
+    "mysql+pymysql://root:MyPassword123@localhost:3306/college_db"
+)
+```
+
+Also make sure:
+
+* MySQL Server is running
+* Database `college_db` exists
+* User credentials are correct
+
+---
+
+## Project Structure
+
+```text
+AI-SQL-Generator/
+│
+├── SQL.py
+├── .env
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+---
+
+## How It Works
+
+1. Connects to the MySQL database.
+2. Extracts the database schema.
+3. Sends the schema and user question to Gemini AI.
+4. Gemini generates a SQL query.
+5. The application removes markdown formatting if present.
+6. The SQL query is executed.
+7. Results are displayed.
+
+---
 
 ## Example
 
@@ -87,41 +144,65 @@ create a table for student marks
 
 ```sql
 CREATE TABLE student_marks (
-    student_id INT PRIMARY KEY,
-    student_name VARCHAR(100),
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
     marks INT
 );
 ```
 
-## Project Structure
+---
 
-```text
-project/
-│
-├── main.py
-├── README.md
-└── requirements.txt
+## Running the Application
+
+```bash
+python SQL.py
 ```
+
+---
+
+## Security Notes
+
+### Never Upload These Files to GitHub
+
+* `.env`
+* Files containing API keys
+* Files containing database passwords
+
+Create a `.gitignore` file:
+
+```gitignore
+.env
+__pycache__/
+*.pyc
+.idea/
+venv/
+.venv/
+```
+
+---
 
 ## Future Improvements
 
-* Streamlit Web Interface
-* Voice Input Support
+* Streamlit Interface
+* Voice-Based Query Input
 * Query Validation
-* Database Visualization
+* Query History
 * Multi-Database Support
-* Query History Management
+* Database Visualization
+
+---
 
 ## Learning Outcomes
 
 This project demonstrates:
 
-* Generative AI integration
-* LangChain workflows
-* Prompt engineering
-* Database automation
-* Natural Language Processing
-* SQL generation using LLMs
+* Generative AI Integration
+* LangChain Workflows
+* Prompt Engineering
+* Database Automation
+* SQL Generation Using LLMs
+* Python Backend Development
+
+---
 
 ## Author
 
@@ -129,14 +210,17 @@ Amal
 
 Computer Science Student
 
-Interested in:
+Interests:
 
 * Artificial Intelligence
 * Machine Learning
+* Generative AI
 * LangChain
-* RAG Applications
+* SQL Automation
 * Python Development
+
+---
 
 ## License
 
-This project is open source and available under the MIT License.
+This project is open-source and available under the MIT License.
